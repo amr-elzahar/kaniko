@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: kaniko
+spec:
+  containers:
+    - name: kaniko-container
+      image: gcr.io/kaniko-project/executor:latest
+      args:
+        - "--dockerfile=./Dockerfile"
+        - "--context=git://github.com/amr-elzahar/kaniko.git"
+        - "--destination=<aws_account_id.dkr.ecr.region.amazonaws.com/my-repository:my-tag>"
+      volumeMounts:
+        - name: awscredmount
+          mountPath: /root/.aws/
+  restartPolicy: Never
+  volumes:
+    - name: awscredmount
+      secret:
+        secretName: aws-creds
